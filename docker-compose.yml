@@ -1,0 +1,221 @@
+version: '3.8'
+
+services:
+  # Base de données MongoDB pour les données non structurées
+  mongodb:
+    image: mongo:7.0
+    container_name: disaster-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password123
+      MONGO_INITDB_DATABASE: disaster_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - disaster-network
+
+  # Base de données PostgreSQL pour les données structurées
+  postgres:
+    image: postgres:15
+    container_name: disaster-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: disaster_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: password123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - disaster-network
+
+  # Redis pour le cache et les sessions
+  redis:
+    image: redis:7.2-alpine
+    container_name: disaster-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - disaster-network
+
+  # RabbitMQ pour la communication inter-services
+  rabbitmq:
+    image: rabbitmq:3.12-management
+    container_name: disaster-rabbitmq
+    restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: password123
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - disaster-network
+
+  # API Gateway
+  api-gateway:
+    build:
+      context: ./services/api-gateway
+      dockerfile: Dockerfile
+    container_name: disaster-api-gateway
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - AUTH_SERVICE_URL=http://auth-service:3001
+      - INCIDENT_SERVICE_URL=http://incident-service:3002
+      - MAP_SERVICE_URL=http://map-service:3003
+      - NOTIFICATION_SERVICE_URL=http://notification-service:3004
+      - GAMIFICATION_SERVICE_URL=http://gamification-service:3005
+      - DASHBOARD_SERVICE_URL=http://dashboard-service:3006
+    depends_on:
+      - redis
+      - rabbitmq
+    networks:
+      - disaster-network
+
+  # Service d'authentification
+  auth-service:
+    build:
+      context: ./services/auth-service
+      dockerfile: Dockerfile
+    container_name: disaster-auth-service
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - DATABASE_URL=postgresql://admin:password123@postgres:5432/disaster_db
+      - JWT_SECRET=your-super-secret-jwt-key
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - postgres
+      - redis
+      - rabbitmq
+    networks:
+      - disaster-network
+
+  # Service de rapports d'incidents
+  incident-service:
+    build:
+      context: ./services/incident-service
+      dockerfile: Dockerfile
+    container_name: disaster-incident-service
+    restart: unless-stopped
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=development
+      - PORT=3002
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017/disaster_db?authSource=admin
+      - RABBITMQ_URL=amqp://admin:password123@rabbitmq:5672
+    depends_on:
+      - mongodb
+      - rabbitmq
+    networks:
+      - disaster-network
+
+  # Service de cartographie
+  map-service:
+    build:
+      context: ./services/map-service
+      dockerfile: Dockerfile
+    container_name: disaster-map-service
+    restart: unless-stopped
+    ports:
+      - "3003:3003"
+    environment:
+      - NODE_ENV=development
+      - PORT=3003
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017/disaster_db?authSource=admin
+      - RABBITMQ_URL=amqp://admin:password123@rabbitmq:5672
+    depends_on:
+      - mongodb
+      - rabbitmq
+    networks:
+      - disaster-network
+
+  # Service de notifications
+  notification-service:
+    build:
+      context: ./services/notification-service
+      dockerfile: Dockerfile
+    container_name: disaster-notification-service
+    restart: unless-stopped
+    ports:
+      - "3004:3004"
+    environment:
+      - NODE_ENV=development
+      - PORT=3004
+      - REDIS_URL=redis://redis:6379
+      - RABBITMQ_URL=amqp://admin:password123@rabbitmq:5672
+    depends_on:
+      - redis
+      - rabbitmq
+    networks:
+      - disaster-network
+
+  # Service de gamification
+  gamification-service:
+    build:
+      context: ./services/gamification-service
+      dockerfile: Dockerfile
+    container_name: disaster-gamification-service
+    restart: unless-stopped
+    ports:
+      - "3005:3005"
+    environment:
+      - NODE_ENV=development
+      - PORT=3005
+      - DATABASE_URL=postgresql://admin:password123@postgres:5432/disaster_db
+      - RABBITMQ_URL=amqp://admin:password123@rabbitmq:5672
+    depends_on:
+      - postgres
+      - rabbitmq
+    networks:
+      - disaster-network
+
+  # Service de tableaux de bord
+  dashboard-service:
+    build:
+      context: ./services/dashboard-service
+      dockerfile: Dockerfile
+    container_name: disaster-dashboard-service
+    restart: unless-stopped
+    ports:
+      - "3006:3006"
+    environment:
+      - NODE_ENV=development
+      - PORT=3006
+      - DATABASE_URL=postgresql://admin:password123@postgres:5432/disaster_db
+      - MONGODB_URL=mongodb://admin:password123@mongodb:27017/disaster_db?authSource=admin
+      - RABBITMQ_URL=amqp://admin:password123@rabbitmq:5672
+    depends_on:
+      - postgres
+      - mongodb
+      - rabbitmq
+    networks:
+      - disaster-network
+
+volumes:
+  mongodb_data:
+  postgres_data:
+  redis_data:
+  rabbitmq_data:
+
+networks:
+  disaster-network:
+    driver: bridge
+

@@ -1,0 +1,13 @@
+server {
+    listen 80;
+    server_name localhost;
+
+    root /home/ubuntu/disaster-management-app/frontend/disaster-management-frontend/dist;
+    index index.html index.htm;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+}
+
+

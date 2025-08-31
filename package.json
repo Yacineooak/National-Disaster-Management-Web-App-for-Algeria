@@ -1,0 +1,43 @@
+{
+  "name": "disaster-management-app",
+  "version": "1.0.0",
+  "description": "Application de gestion des catastrophes nationales pour l'Algérie",
+  "main": "index.js",
+  "scripts": {
+    "install:all": "npm run install:gateway && npm run install:auth && npm run install:incident && npm run install:map && npm run install:notification && npm run install:gamification && npm run install:ai && npm run install:dashboard",
+    "install:gateway": "cd services/api-gateway && npm install",
+    "install:auth": "cd services/auth-service && npm install",
+    "install:incident": "cd services/incident-service && npm install",
+    "install:map": "cd services/map-service && npm install",
+    "install:notification": "cd services/notification-service && npm install",
+    "install:gamification": "cd services/gamification-service && npm install",
+    "install:ai": "cd services/ai-service && npm install",
+    "install:dashboard": "cd services/dashboard-service && npm install",
+    "dev:gateway": "cd services/api-gateway && npm run start:dev",
+    "dev:auth": "cd services/auth-service && npm run start:dev",
+    "dev:incident": "cd services/incident-service && npm run start:dev",
+    "dev:map": "cd services/map-service && npm run start:dev",
+    "dev:notification": "cd services/notification-service && npm run start:dev",
+    "dev:gamification": "cd services/gamification-service && npm run start:dev",
+    "dev:ai": "cd services/ai-service && npm run start:dev",
+    "dev:dashboard": "cd services/dashboard-service && npm run start:dev",
+    "build:all": "npm run build:gateway && npm run build:auth && npm run build:incident && npm run build:map && npm run build:notification && npm run build:gamification && npm run build:ai && npm run build:dashboard",
+    "build:gateway": "cd services/api-gateway && npm run build",
+    "build:auth": "cd services/auth-service && npm run build",
+    "build:incident": "cd services/incident-service && npm run build",
+    "build:map": "cd services/map-service && npm run build",
+    "build:notification": "cd services/notification-service && npm run build",
+    "build:gamification": "cd services/gamification-service && npm run build",
+    "build:ai": "cd services/ai-service && npm run build",
+    "build:dashboard": "cd services/dashboard-service && npm run build"
+  },
+  "keywords": ["disaster", "management", "algeria", "microservices", "nestjs"],
+  "author": "Disaster Management Team",
+  "license": "MIT",
+  "workspaces": [
+    "services/*",
+    "shared/*",
+    "frontend"
+  ]
+}
+

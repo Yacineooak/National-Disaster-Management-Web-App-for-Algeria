@@ -2,6 +2,7 @@
 # Application de Gestion des Catastrophes Nationales - Algérie
 
 ## 🚨 Vue d'ensemble
+<img width="1901" height="882" alt="fedgddgdgdg" src="https://github.com/user-attachments/assets/c20a6297-36d6-4868-b968-c326149161b6" />
 
 Cette application web complète permet aux citoyens algériens de signaler des incidents et catastrophes naturelles en temps réel, tout en offrant aux autorités gouvernementales et ONG des outils avancés de gestion et d'analyse des risques.
 
@@ -15,6 +16,8 @@ Cette application web complète permet aux citoyens algériens de signaler des i
 - Géolocalisation automatique des utilisateurs
 
 ### 📱 Signalement d'incidents
+<img width="1133" height="879" alt="fghtrgertggtr" src="https://github.com/user-attachments/assets/3682e967-6f29-4bf0-8546-de2fe2f14f0a" />
+
 - Formulaire complet avec géolocalisation
 - Upload de photos (max 5, jusqu'à 5MB chacune)
 - Catégorisation automatique (séisme, inondation, incendie, etc.)

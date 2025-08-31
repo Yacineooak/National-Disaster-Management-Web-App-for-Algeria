@@ -217,10 +217,8 @@ Développé pour la République Algérienne Démocratique et Populaire dans le c
 ## 📞 Support
 
 Pour toute question ou problème :
-- 📧 Email : support@gestion-catastrophes.dz
-- 📱 Téléphone : +213 (0) 21 XX XX XX
-- 🌐 Site web : https://gestion-catastrophes.gov.dz
-
+- 📧 Email : stylebenderkh@gmail.com
+- 📱 Téléphone : +213 541 09 59 03
 ---
 
 **🇩🇿 Pour une Algérie plus sûre et résiliente face aux catastrophes naturelles**
